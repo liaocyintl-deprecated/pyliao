@@ -70,8 +70,8 @@ class MyEncoder(json.JSONEncoder):
             return super(MyEncoder, self).default(obj)
 
 
-def save_json(path, data):
-    with open(path, 'w') as outfile:
+def save_json(path, data, encoding="utf-8"):
+    with open(path, 'w', encoding=encoding) as outfile:
         json.dump(data, outfile, ensure_ascii=False, cls=MyEncoder)
 
 
