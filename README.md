@@ -2,7 +2,7 @@
 
 ## in the *common* package
 
-- load_csv(path): return a json object from specified path.
+- load_csv(path): return a two dimensional array from a csv file.
 
 - load_lines(file): load lines from a txt file, and replace all "\n"s to "".
 
