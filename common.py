@@ -54,6 +54,10 @@ class log:
         print(str)
         self.a.write(str + "\n")
 
+    def write_without_datetime(self, str):
+        print(str)
+        self.a.write(str + "\n")
+
     def __del__(self):
         self.a.close()
 
