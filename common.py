@@ -83,6 +83,9 @@ def load_json(path, encoding="utf-8"):
     with open(path, encoding=encoding) as data_file:
         return json.load(data_file)
 
+def save_text(path, text, encoding="utf-8"):
+    with open(path, "w", encoding=encoding) as text_file:
+        print(text, file=text_file, encoding=encoding)
 
 def clean_folder(folder):
     for the_file in os.listdir(folder):
