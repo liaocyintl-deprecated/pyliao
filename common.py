@@ -26,7 +26,6 @@ def prepare_clean_dir(directory):
     prepare_dir(directory)
 
 
-
 def prepare_dir(directory):
     if not os.path.exists(directory):
         os.makedirs(directory)
@@ -48,12 +47,12 @@ def current_datetime():
 
 
 class log:
-    def __init__(self):
-        self.a = open('run.log', 'a')
+    def __init__(self, filename='run.log'):
+        self.a = open(filename, 'a')
 
     def write(self, str):
-        str += " " + current_datetime()
-        print(str)
+        str = "%s -> %s" % (current_datetime(), str)
+        print("Logging %s" % str)
         self.a.write(str + "\n")
 
     def write_without_datetime(self, str):
@@ -85,9 +84,11 @@ def load_json(path, encoding="utf-8"):
     with open(path, encoding=encoding) as data_file:
         return json.load(data_file)
 
+
 def save_text(path, text, encoding="utf-8"):
     with open(path, "w", encoding=encoding) as text_file:
         print(text, file=text_file, encoding=encoding)
+
 
 def clean_folder(path):
     if is_path_exists(path):
