@@ -3,6 +3,7 @@ import ntpath
 from datetime import datetime
 import json
 import numpy as np
+import shutil
 
 
 def load_csv(path):
@@ -21,8 +22,9 @@ def load_lines(file):
 
 
 def prepare_clean_dir(directory):
-    prepare_dir(directory)
     clean_folder(directory)
+    prepare_dir(directory)
+
 
 
 def prepare_dir(directory):
@@ -87,15 +89,9 @@ def save_text(path, text, encoding="utf-8"):
     with open(path, "w", encoding=encoding) as text_file:
         print(text, file=text_file, encoding=encoding)
 
-def clean_folder(folder):
-    for the_file in os.listdir(folder):
-        file_path = os.path.join(folder, the_file)
-        try:
-            if os.path.isfile(file_path):
-                os.unlink(file_path)
-                # elif os.path.isdir(file_path): shutil.rmtree(file_path)
-        except Exception as e:
-            print(e)
+def clean_folder(path):
+    if is_path_exists(path):
+        shutil.rmtree(path)
 
 
 import pickle
