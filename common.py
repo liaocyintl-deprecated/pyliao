@@ -1,8 +1,8 @@
 import os
-import ntpath
 from datetime import datetime
 import json
 import numpy as np
+from pathlib import Path
 
 
 def load_csv(path):
@@ -26,19 +26,13 @@ def prepare_clean_dir(directory):
 
 
 def prepare_dir(directory):
-    if not os.path.exists(directory):
-        os.makedirs(directory)
+    if not os.path.exists(Path(directory)):
+        os.makedirs(Path(directory))
 
 
 def get_filename_and_postfix_from_path(path):
-    name = ntpath.basename(path)
-    if os.path.isdir(path):
-        return name, ""
-    else:
-        if len(name.split(".")) == 1:
-            return name, ""
-        else:
-            return name.split(".")[0], name.split(".")[1]
+    filename = Path(path)
+    return filename.stem, filename.suffix
 
 
 def current_datetime():
@@ -81,6 +75,7 @@ def load_json(path, encoding="utf-8"):
 
 
 def clean_folder(folder):
+    folder = Path(folder)
     for the_file in os.listdir(folder):
         file_path = os.path.join(folder, the_file)
         try:
