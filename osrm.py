@@ -6,12 +6,12 @@ from geopy.distance import vincenty
 import os
 import sqlite3
 import requests
-
+from pathlib import Path
 
 class OSRM():
     def __init__(self):
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        self.conn = sqlite3.connect(dir_path + "/db.sqlite")
+        self.conn = sqlite3.connect(Path(dir_path) + "/db.sqlite")
 
     def __del__(self):
         self.conn.close()
