@@ -113,12 +113,13 @@ class OSRM():
 
                 result = jsonroute
             else:
-                result = '{result:"no_route"}'
+                result = {"result": "no_route"}
 
         return result
 
 
 if __name__ == "__main__":
     router = OSRM()
-    rs = router.route(34.91938, 137.167146, 34.92273, 137.166829)
-    print(rs)
+    while True:
+        rs = router.route(34.91938, 137.167146, 34.92273, 137.166829)
+        print(rs)
