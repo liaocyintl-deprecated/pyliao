@@ -46,6 +46,8 @@ class OSRM():
                 result["result"] = "success"
             except:
                 pass
+        else:
+            print(j)
         # center -- end
 
 
