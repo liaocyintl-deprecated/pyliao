@@ -11,7 +11,7 @@ from pathlib import Path
 class OSRM():
     def __init__(self):
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        self.conn = sqlite3.connect(Path(dir_path) + "/db.sqlite")
+        self.conn = sqlite3.connect(str(Path(dir_path) / "db.sqlite"))
 
     def __del__(self):
         self.conn.close()
@@ -33,179 +33,21 @@ class OSRM():
         result = dict()
         result["result"] = "failure"
 
-        max_distance = 10 ** 8
-        interval = 0.0002
-        start_lat, start_lon = lat1, lon1
 
         # center
-        j = requests.get('http://router.project-osrm.org/route/v1/driving/%f,%f;%f,%f' % (lon1, lat1, lon2, lat2),
+        j = requests.get('http://router.project-osrm.org/route/v1/foot/%f,%f;%f,%f' % (lon1, lat1, lon2, lat2),
                          params={'geometries': 'geojson'}).json()
-        if j["code"] == "Ok":
+        if "code" in j and j["code"] == "Ok":
             try:
                 route = j["routes"][0]["geometry"]["coordinates"]
                 route[0] = [lon1, lat1]
                 route[-1] = [lon2, lat2]
-                distance = self.__getdistance__(route)
-                if max_distance > distance:
-                    start_lat, start_lon = lat1, lon1
-                    max_distance = distance
-                    result["route"] = route
-                    result["result"] = "success"
+                result["route"] = route
+                result["result"] = "success"
             except:
                 pass
         # center -- end
 
-        # up
-        j = requests.get(
-            'http://router.project-osrm.org/route/v1/driving/%f,%f;%f,%f' % (lon1, lat1 + interval, lon2, lat2),
-            params={'geometries': 'geojson'}).json()
-        if j["code"] == "Ok":
-            try:
-                route = j["routes"][0]["geometry"]["coordinates"]
-                route[0] = [lon1, lat1]
-                route[-1] = [lon2, lat2]
-                distance = self.__getdistance__(route)
-                if max_distance > distance:
-                    start_lat, start_lon = lat1 + interval, lon1
-                    max_distance = distance
-                    result["route"] = route
-                    result["result"] = "success"
-            except:
-                pass
-        # up -- end
-
-        # down
-        j = requests.get(
-            'http://router.project-osrm.org/route/v1/driving/%f,%f;%f,%f' % (lon1, lat1 - interval, lon2, lat2),
-            params={'geometries': 'geojson'}).json()
-        if j["code"] == "Ok":
-            try:
-                route = j["routes"][0]["geometry"]["coordinates"]
-                route[0] = [lon1, lat1]
-                route[-1] = [lon2, lat2]
-                distance = self.__getdistance__(route)
-                if max_distance > distance:
-                    start_lat, start_lon = lat1 - interval, lon1
-                    max_distance = distance
-                    result["route"] = route
-                    result["result"] = "success"
-            except:
-                pass
-        # down -- end
-
-        # left
-        j = requests.get(
-            'http://router.project-osrm.org/route/v1/driving/%f,%f;%f,%f' % (lon1 - interval, lat1, lon2, lat2),
-            params={'geometries': 'geojson'}).json()
-        if j["code"] == "Ok":
-            try:
-                route = j["routes"][0]["geometry"]["coordinates"]
-                route[0] = [lon1, lat1]
-                route[-1] = [lon2, lat2]
-                distance = self.__getdistance__(route)
-                if max_distance > distance:
-                    start_lat, start_lon = lat1, lon1 - interval
-                    max_distance = distance
-                    result["route"] = route
-                    result["result"] = "success"
-            except:
-                pass
-        # left -- end
-
-        # right
-        j = requests.get(
-            'http://router.project-osrm.org/route/v1/driving/%f,%f;%f,%f' % (lon1 + interval, lat1, lon2, lat2),
-            params={'geometries': 'geojson'}).json()
-        if j["code"] == "Ok":
-            try:
-                route = j["routes"][0]["geometry"]["coordinates"]
-                route[0] = [lon1, lat1]
-                route[-1] = [lon2, lat2]
-                distance = self.__getdistance__(route)
-                if max_distance > distance:
-                    start_lat, start_lon = lat1, lon1 + interval
-                    max_distance = distance
-                    result["route"] = route
-                    result["result"] = "success"
-            except:
-                pass
-        # right -- end
-
-        # endup
-        j = requests.get(
-            'http://router.project-osrm.org/route/v1/driving/%f,%f;%f,%f' % (
-            start_lon, start_lat, lon2, lat2 + interval),
-            params={'geometries': 'geojson'}).json()
-        if j["code"] == "Ok":
-            try:
-                route = j["routes"][0]["geometry"]["coordinates"]
-                route[0] = [lon1, lat1]
-                route[-1] = [lon2, lat2]
-                distance = self.__getdistance__(route)
-                if max_distance > distance:
-                    max_distance = distance
-                    result["route"] = route
-                    result["result"] = "success"
-            except:
-                pass
-        # endup -- end
-
-        # enddown
-        j = requests.get(
-            'http://router.project-osrm.org/route/v1/driving/%f,%f;%f,%f' % (
-                start_lon, start_lat, lon2, lat2 - interval),
-            params={'geometries': 'geojson'}).json()
-        if j["code"] == "Ok":
-            try:
-                route = j["routes"][0]["geometry"]["coordinates"]
-                route[0] = [lon1, lat1]
-                route[-1] = [lon2, lat2]
-                distance = self.__getdistance__(route)
-                if max_distance > distance:
-                    max_distance = distance
-                    result["route"] = route
-                    result["result"] = "success"
-            except:
-                pass
-        # enddown -- end
-
-        # endleft
-        j = requests.get(
-            'http://router.project-osrm.org/route/v1/driving/%f,%f;%f,%f' % (
-                start_lon, start_lat, lon2 - interval, lat2),
-            params={'geometries': 'geojson'}).json()
-        if j["code"] == "Ok":
-            try:
-                route = j["routes"][0]["geometry"]["coordinates"]
-                route[0] = [lon1, lat1]
-                route[-1] = [lon2, lat2]
-                distance = self.__getdistance__(route)
-                if max_distance > distance:
-                    max_distance = distance
-                    result["route"] = route
-                    result["result"] = "success"
-            except:
-                pass
-        # endleft -- end
-
-        # endright
-        j = requests.get(
-            'http://router.project-osrm.org/route/v1/driving/%f,%f;%f,%f' % (
-                start_lon, start_lat, lon2 + interval, lat2),
-            params={'geometries': 'geojson'}).json()
-        if j["code"] == "Ok":
-            try:
-                route = j["routes"][0]["geometry"]["coordinates"]
-                route[0] = [lon1, lat1]
-                route[-1] = [lon2, lat2]
-                distance = self.__getdistance__(route)
-                if max_distance > distance:
-                    max_distance = distance
-                    result["route"] = route
-                    result["result"] = "success"
-            except:
-                pass
-        # endright -- end
 
         return result
 
@@ -242,9 +84,22 @@ class OSRM():
                     if old_lat != 0 and old_lon != 0:
                         distance += vincenty((old_lat, old_lon), (lat, lon)).meters
                         rate = distance / total_distance
-                        jsonroute["route"].append([lat, lon, distance, rate, r_index])
+                        jsonroute["route"].append({
+                            "lat": lat,
+                            "lon": lon,
+                            "distance": distance,
+                            "proportion": rate,
+                            "index":r_index
+                        })
+                        # [lat, lon, distance, rate, r_index]
                     else:
-                        jsonroute["route"].append([lat, lon, 0., 0., r_index])
+                        jsonroute["route"].append({
+                            "lat": lat,
+                            "lon": lon,
+                            "distance": 0.,
+                            "proportion": 0.,
+                            "index":r_index
+                        })
                     old_lat = lat
                     old_lon = lon
                     # route -- end
