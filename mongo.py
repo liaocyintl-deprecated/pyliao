@@ -37,8 +37,8 @@ class Mongo:
     def save(self, col, doc):
         self.db[col].save(doc)
 
-    def find(self, col, query={}):
-        return self.db[col].find(query)
+    def find(self, col, query={}, timeout=False):
+        return self.db[col].find(query, timeout=timeout)
 
     def find_snapshot(self, col, query, timeout=False):
         return self.db[col].find(query, snapshot=True, timeout=timeout)
