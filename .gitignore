@@ -1,2 +1,4 @@
-.idea/*
+.idea*/
 test/git
+.vscode*/
+run.log
