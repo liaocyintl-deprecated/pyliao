@@ -35,7 +35,10 @@ class Mongo:
         return self.db[col].find_one(query)
 
     def save(self, col, doc):
-        self.db[col].save(doc)
+        _id = doc["_id"]
+        doc.pop("_id")
+
+        self.db[col].update_one({'_id': _id}, {'$set': doc})
 
     def find(self, col, query={}, timeout=False):
         return self.db[col].find(query, timeout=timeout)
