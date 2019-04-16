@@ -24,6 +24,7 @@ class Mongo:
         ).get('id')
 
         self.db[col].insert(doc)
+        return doc
 
     def remove_all_documents(self, col):
         self.db[col].remove()
@@ -34,17 +35,24 @@ class Mongo:
     def find_one(self, col, query):
         return self.db[col].find_one(query)
 
+    def get_col(self, col):
+        return self.db[col]
+
     def save(self, col, doc):
-        _id = doc["_id"]
-        doc.pop("_id")
+        d = self.find_one(col, {"_id": doc["_id"]})
 
-        self.db[col].update_one({'_id': _id}, {'$set': doc})
+        if d:
+            _id = doc["_id"]
+            # doc.pop("_id")
+            self.db[col].update_one({'_id': _id}, {'$set': doc})
+        else:
+            self.db[col].insert(doc)
 
-    def find(self, col, query={}, timeout=False):
-        return self.db[col].find(query, timeout=timeout)
+    def find(self, col, query={}):
+        return self.db[col].find(query)
 
     def find_snapshot(self, col, query, timeout=False):
-        return self.db[col].find(query, snapshot=True, timeout=timeout)
+        return self.db[col].find(query, timeout=timeout)
 
     def find_sort(self, col, query, sortkey, sortorder):
         return self.db[col].find(query).sort(sortkey, sortorder)
