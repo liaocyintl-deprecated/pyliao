@@ -39,6 +39,9 @@ class Mongo:
     def find_one(self, col, query):
         return self.db[col].find_one(query)
 
+    def find_one_sort(self, col, query, sort):
+        return self.db[col].find_one(query, sort=sort)
+
     def get_col(self, col):
         return self.db[col]
 
