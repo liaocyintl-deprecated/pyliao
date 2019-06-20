@@ -30,6 +30,9 @@ class Mongo:
         self.db[col].insert(doc)
         return doc
 
+    def remove(self, col, query):
+        self.db[col].remove(query)
+
     def remove_all_documents(self, col):
         self.db[col].remove()
 
